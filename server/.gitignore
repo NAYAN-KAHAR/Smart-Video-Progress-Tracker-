@@ -35,6 +35,3 @@ build/
 # OS-specific files
 *.swp
 *.swo
-
-# Database files (if applicable)
-*.db
