@@ -12,7 +12,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
-  origin:'http://localhost:5173'
+  origin:'gentle-cendol-ffa460.netlify.app'
 }));
 
 app.use(express.json());
