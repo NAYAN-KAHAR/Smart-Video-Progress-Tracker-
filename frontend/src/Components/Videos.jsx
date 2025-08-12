@@ -6,16 +6,9 @@ import { CiVideoOn } from "react-icons/ci";
 import axios from "axios";
 import dotenv from 'dotenv';
 
-const initialVideos = [
-  { id: 1, title: "Intro to Python", src: "/Assets/Lec-2.mp4" },
-  { id: 2, title: "Escape Characters", src: "/Assets/Lec-7.mp4" },
-  { id: 3, title: "Membership Operator", src: "/Assets/Lec-14.mp4" },
-  { id: 4, title: "Quote in Python", src: "/Assets/Lec-30.mp4" },
-];
-
 const Videos = () => {
-  const [videos] = useState(initialVideos);
-  const [selectedVideo, setSelectedVideo] = useState(initialVideos[0]);
+  const [videos, setVideos] = useState([]);
+  const [selectedVideo, setSelectedVideo] = useState('');
   const [openMenu, setOpenMenu] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -32,6 +25,26 @@ const Videos = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+
+useEffect(() => {
+  const fetchVideoDetails = async () => {
+    try{
+      const res = await axios.get(`${import.meta.env.VITE_SERVAR_URL}/api/allvideo`);
+      console.log(res.data);
+       const allVideos = res.data;
+      setVideos(allVideos);
+      // ✅ Set first video as selected
+      if (allVideos.length > 0) {
+        setSelectedVideo(allVideos[0]);
+      }
+
+    }catch(err){
+      console.log(err)
+    }
+  }
+  fetchVideoDetails();
+},[]);
 
   // Fetch and track progress
   useEffect(() => {
@@ -120,7 +133,8 @@ const Videos = () => {
               {videos.map((video) => (
                 <div key={video.id}>
                   <div onClick={() => { setSelectedVideo(video); if (isMobile) setOpenMenu(false);}}
-                    className={`p-2 px-4 mb-2 cursor-pointer rounded ${selectedVideo.id === video.id ? "bg-gray-300" : "hover:bg-gray-200"}`}>
+                    className={`p-2 px-4 mb-2 cursor-pointer rounded 
+                    ${selectedVideo && selectedVideo.id === video.id ? "bg-gray-300" : "hover:bg-gray-200"}`}>
                     <h3 className="text-lg font-semibold">{video.title}</h3>
                   </div>
                   <div className="px-4 flex items-center gap-2 mb-4">
@@ -145,7 +159,7 @@ const Videos = () => {
 
         {selectedVideo && (
           <div className="relative w-full pt-[56.25%] mt-7">
-            <video ref={videoRef} src={selectedVideo.src} controls
+            <video ref={videoRef} src={selectedVideo.videoUrl} controls
               controlsList="nodownload"
               className="absolute top-0 left-0 w-full h-full rounded shadow-lg"/>
           </div>

@@ -5,15 +5,20 @@ import 'dotenv/config';
 import helmet from 'helmet';
 import mongoose from "./config/db.js";
 import videoRoute from './Routes/videoRoute.js'
-
+import dotenv from 'dotenv';
 
 // Initialize the Express app
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
-  origin:'gentle-cendol-ffa460.netlify.app'
+  origin:'*'
 }));
+
+
+// app.use(cors({
+//   origin:'gentle-cendol-ffa460.netlify.app'
+// }));
 
 app.use(express.json());
 app.use(helmet());
@@ -25,6 +30,8 @@ mongoose.connection.on('open', () => {
 mongoose.connection.on('error', (err) => {
   console.log('Database Connection Failed', err);
 });
+
+
 
 app.use('/api', videoRoute);
 
