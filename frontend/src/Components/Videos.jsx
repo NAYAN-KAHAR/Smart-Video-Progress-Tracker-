@@ -4,18 +4,32 @@ import { IoMenuOutline } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
 import { CiVideoOn } from "react-icons/ci";
 import axios from "axios";
-import dotenv from 'dotenv';
+import { nanoid } from "nanoid";
+import Cookies from "js-cookie";
+
 
 const Videos = () => {
   const [videos, setVideos] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState('');
   const [openMenu, setOpenMenu] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-
+  const [userId, setUserId] = useState(null);
+  
   const videoRef = useRef(null);
   const [watchTime, setWatchTime] = useState(new Set());
   const [videoDuration, setVideoDuration] = useState(1); // Default to 1 to avoid division by zero
   const [progressMap, setProgressMap] = useState({});
+
+    // ✅ Get or generate userId from cookies
+  useEffect(() => {
+    let storedUserId = Cookies.get("userId");
+    if (!storedUserId) {
+      storedUserId = nanoid();
+      Cookies.set("userId", storedUserId, { expires: 365 }); // Store for 1 year
+    }
+    setUserId(storedUserId);
+  }, []);
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -31,7 +45,7 @@ useEffect(() => {
   const fetchVideoDetails = async () => {
     try{
       const res = await axios.get(`${import.meta.env.VITE_SERVAR_URL}/api/allvideo`);
-      console.log(res.data);
+      // console.log(res.data);
        const allVideos = res.data;
       setVideos(allVideos);
       // ✅ Set first video as selected
@@ -51,7 +65,6 @@ useEffect(() => {
     const video = videoRef.current;
     if (!video || !selectedVideo) return;
 
-    const userId = "user123";
     let lastTime = 0;
     let intervalSet = new Set();
 
@@ -104,6 +117,8 @@ useEffect(() => {
       video.removeEventListener("loadedmetadata", handleLoadedMetadata);
     };
   }, [selectedVideo]);
+
+
 
   const getProgressPercent = () => {
     return progressMap[selectedVideo.id] || 0;

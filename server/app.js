@@ -12,7 +12,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
-  origin:'*'
+  origin:'https://famous-clafoutis-71414f.netlify.app'
 }));
 
 

@@ -5,7 +5,7 @@ import './style.css';
 import { Route, Routes } from 'react-router-dom';
 
 import Videos from './Components/Videos';
-import Sample from './Components/sample';
+// import Sample from './Components/sample';
 
 
 const App = () => {
@@ -14,8 +14,7 @@ const App = () => {
         <>
     
       	<Routes>
-          <Route path='/' element={<Sample />} />
-          <Route path='/home' element={<HomePage />} />
+          <Route path='/' element={<HomePage />} />
           <Route path='/videos' element={<Videos />} />
         </Routes>
         </>
